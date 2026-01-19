@@ -31,10 +31,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify environment variables
+        run: |
+          echo "Checking environment variables..."
+          if [ -z "${{ secrets.GH_USERNAME }}" ] && [ -z "${{ vars.GH_USERNAME }}" ]; then
+            echo "Warning: GH_USERNAME not found in secrets or variables, will use repository owner: ${{ github.repository_owner }}"
+          else
+            echo "✓ GH_USERNAME is set"
+          fi
+          if [ -z "${{ secrets.GH_TOKEN }}" ] && [ -z "${{ secrets.GH_PAT }}" ]; then
+            echo "Warning: No GitHub token found in secrets. API calls may be rate limited."
+          else
+            echo "✓ GitHub token is set"
+          fi
+
       - name: Build
         env:
-          VITE_GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME || vars.GITHUB_USERNAME || github.repository_owner }}
-          VITE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.GH_PAT || secrets.GITHUB_PAT }}
+          VITE_GITHUB_USERNAME: ${{ secrets.GH_USERNAME || vars.GH_USERNAME || github.repository_owner }}
+          VITE_GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GH_PAT }}
           GITHUB_PAGES_BASE: /${{ github.event.repository.name }}/
         run: npm run build
 
