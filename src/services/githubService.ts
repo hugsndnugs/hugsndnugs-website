@@ -141,13 +141,8 @@ function filterGitHubPagesProjects(repos: GitHubRepository[]): GitHubRepository[
   // Filter repositories that likely have GitHub Pages
   // We can't definitively check without additional API calls, so we'll include all repos
   // Users can manually filter or we can check for specific indicators
-  return repos.filter(repo => {
-    // Include repos that:
-    // 1. Have a homepage URL (often indicates GitHub Pages)
-    // 2. Have certain file patterns that suggest static sites (harder to detect without API calls)
-    // For now, include all repos and let users filter
-    return true;
-  });
+  // For now, include all repos and let users filter
+  return repos;
 }
 
 export async function fetchProjects(): Promise<Project[]> {
